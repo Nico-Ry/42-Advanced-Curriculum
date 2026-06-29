@@ -23,6 +23,14 @@ The goal is not only to complete projects, but also to document:
 
 ---
 
+## Roadmap
+
+My current Advanced Curriculum planning is tracked here:
+
+**[ROADMAP.md](./ROADMAP.md)**
+
+---
+
 ## Main Focus
 
 My current focus areas are:
