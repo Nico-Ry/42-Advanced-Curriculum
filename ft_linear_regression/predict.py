@@ -1,39 +1,79 @@
-import csv
 
-mileages = []
-prices = []
+"""Predict a car's price using previously trained regression parameters."""
 
-with open("data.csv", "r") as file:
-	reader = csv.DictReader(file)
+import json
+import math
+from pathlib import Path
 
-	for row in reader:
-		mileages.append(float(row["km"]))
-		prices.append(float(row["price"]))
 
-print("Number of rows:", len(mileages))
+# Locate the saved model relative to this script.
+BASE_DIR = Path(__file__).resolve().parent
+MODEL_FILE = BASE_DIR / "thetas.json"
 
-print("Min mileage:", min(mileages))
-print("Max mileage:", max(mileages))
 
-print("Min price:", min(prices))
-print("Max price:", max(prices))
+def load_model():
+	"""Load theta0 and theta1 from the saved JSON model."""
+	try:
+		with MODEL_FILE.open("r", encoding="utf-8") as file:
+			model = json.load(file)
 
-average_mileage = sum(mileages) / len(mileages)
-average_price = sum(prices) / len(prices)
+	except FileNotFoundError:
+		# The subject requires zero parameters before training.
+		print("No trained model found. Using default parameters.")
+		return 0.0, 0.0
 
-print("Average mileage:", average_mileage)
-print("Average price:", average_price)
+	except json.JSONDecodeError as error:
+		raise ValueError("The model file contains invalid JSON.") from error
 
-theta0 = 0
-theta1 = 0
+	# Check that the JSON contains two valid numeric parameters.
+	try:
+		theta0 = float(model["theta0"])
+		theta1 = float(model["theta1"])
 
-mileage = mileages[0]
-real_price = prices[0]
+	except (KeyError, TypeError, ValueError) as error:
+		raise ValueError("The model must contain numeric theta0 and theta1.") from error
 
-prediction = theta0 + theta1 * mileage
-error = prediction - real_price
+	if not math.isfinite(theta0) or not math.isfinite(theta1):
+		raise ValueError("Model parameters must be finite numbers.")
 
-print("Mileage:", mileage)
-print("Real price:", real_price)
-print("Prediction:", prediction)
-print("Error:", error)
+	return theta0, theta1
+
+
+def get_mileage():
+	"""Ask the user for a valid, non-negative mileage."""
+	try:
+		mileage = float(input("How many km? "))
+
+	except ValueError as error:
+		raise ValueError("Please enter a valid number.") from error
+
+	if not math.isfinite(mileage) or mileage < 0:
+		raise ValueError("Mileage must be a finite, non-negative number.")
+
+	return mileage
+
+
+def estimate_price(mileage, theta0, theta1):
+	"""Estimate a car's price using the linear regression equation."""
+	return theta0 + theta1 * mileage
+
+
+def main():
+	"""Load the model, request mileage, and display the prediction."""
+	try:
+		theta0, theta1 = load_model()
+		mileage = get_mileage()
+
+	except (ValueError, EOFError) as error:
+		print(f"Error: {error}")
+		return 1
+
+	prediction = estimate_price(mileage, theta0, theta1)
+
+	print(f"Estimated price: {prediction:.2f} €")
+
+	return 0
+
+
+if __name__ == "__main__":
+	raise SystemExit(main())
