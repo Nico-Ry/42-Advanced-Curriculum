@@ -224,7 +224,7 @@ $$
 
 To see the arithmetic without all 24 cars, imagine three examples. Start with `theta0 = 0`, `theta1 = 0`, and `alpha = 0.01`.
 
-| Car | Scaled mileage (`x`) | Actual price (`y`) | Initial prediction | Error (`prediction - y`) | `error × x` |
+| Car | Scaled mileage (`x`) | Actual price (`y`) | Initial prediction | Error (`prediction - y`) | `error * x` |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | A | 0.2 | €8,000 | €0 | -8,000 | -1,600 |
 | B | 0.5 | €6,000 | €0 | -6,000 | -3,000 |
