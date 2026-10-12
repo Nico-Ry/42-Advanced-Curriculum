@@ -14,7 +14,7 @@ from train import DATA_FILE, HISTORY_FILE, load_dataset, train_model
 DASHBOARD_IMAGE = DATA_FILE.parent / "dashboard.png"
 
 # Keep the iteration count fixed when comparing learning rates.
-EXPERIMENT_ITERATIONS = 1_000
+EXPERIMENT_ITERATIONS = 20_000
 HISTORY_INTERVAL = 100
 
 
